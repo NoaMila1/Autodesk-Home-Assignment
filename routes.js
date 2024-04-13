@@ -6,9 +6,18 @@ const utils = require('./utils');
 const moment = require('moment');
 const youtubeApiBasePath = 'https://www.googleapis.com/youtube/v3'
 
-
-
 var router = express.Router(); 
+
+
+router.get('/', (req, res) => {
+    res.send(`
+        <h1>Welcome to Noa Mila Home Assignment </h1>
+        <ul>
+            <li><a href="/GetAutoDeskYouTubeVideo">Get Autodesk YouTube Videos</a></li>
+            <li><a href="/Health">Health Check</a></li>
+        </ul>
+    `);
+});
 
 router.get('/GetAutoDeskYouTubeVideo', async function(req, res) {
     try {
@@ -33,14 +42,16 @@ router.get('/GetAutoDeskYouTubeVideo', async function(req, res) {
 });
 
 router.get('/health', function(req, res) {
-    osUtils.cpuUsage(function(v){
+        osUtils.cpuUsage(function(v){
         res.json({
             os: os.type(),
             platformVersion: process.version,
-            memoryUsage: osUtils.freememPercentage(),
-            cpuUsage: v
+            memoryUsage: `${((osUtils.totalmem() - osUtils.freemem()) / osUtils.totalmem() * 100).toFixed(2)}%`,
+            cpuUsage: `${(v * 100).toFixed(2)}%`
         });
     });
 });
 
 module.exports = router;
+const routes = require('./routes');
+router.use('/', routes);
